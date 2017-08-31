@@ -188,10 +188,12 @@ struct {
 
 #define C(x)  ((x)-'@')  // Control-x
 
+extern void printHello(void);
+
 void
-consoleintr(int (*getc)(void))
+consoleintr(int (*getc)(void)) //escucha ctrl + tecla
 {
-  int c, doprocdump = 0;
+  int c, doprocdump = 0, doPrintHello = 0;
 
   acquire(&cons.lock);
   while((c = getc()) >= 0){
@@ -200,6 +202,10 @@ consoleintr(int (*getc)(void))
       // procdump() locks cons.lock indirectly; invoke later
       doprocdump = 1;
       break;
+    case C('C'):  // Kill current process
+        // procdump() locks cons.lock indirectly; invoke later
+        doPrintHello = 1;
+        break;
     case C('U'):  // Kill line.
       while(input.e != input.w &&
             input.buf[(input.e-1) % INPUT_BUF] != '\n'){
@@ -229,6 +235,9 @@ consoleintr(int (*getc)(void))
   release(&cons.lock);
   if(doprocdump) {
     procdump();  // now call procdump() wo. cons.lock held
+  }
+  if(doPrintHello) {
+    printHello();
   }
 }
 
@@ -297,4 +306,3 @@ consoleinit(void)
   picenable(IRQ_KBD);
   ioapicenable(IRQ_KBD, 0);
 }
-
