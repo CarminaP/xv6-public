@@ -188,12 +188,12 @@ struct {
 
 #define C(x)  ((x)-'@')  // Control-x
 
-extern void printHello(void);
+extern void KillProcess(void);
 
 void
 consoleintr(int (*getc)(void)) //escucha ctrl + tecla
 {
-  int c, doprocdump = 0, doPrintHello = 0;
+  int c, doprocdump = 0, doKillProcess = 0;
 
   acquire(&cons.lock);
   while((c = getc()) >= 0){
@@ -204,7 +204,7 @@ consoleintr(int (*getc)(void)) //escucha ctrl + tecla
       break;
     case C('C'):  // Kill current process
         // procdump() locks cons.lock indirectly; invoke later
-        doPrintHello = 1;
+        doKillProcess = 1;
         break;
     case C('U'):  // Kill line.
       while(input.e != input.w &&
@@ -236,8 +236,8 @@ consoleintr(int (*getc)(void)) //escucha ctrl + tecla
   if(doprocdump) {
     procdump();  // now call procdump() wo. cons.lock held
   }
-  if(doPrintHello) {
-    printHello();
+  if(doKillProcess) {
+    KillProcess();
   }
 }
 

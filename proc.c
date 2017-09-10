@@ -555,7 +555,14 @@ procdump(void)
   }
 }
 
-void printHello(void)
+void KillProcess(void)
 {
-  cprintf("Hola desde console\n");
+  if(myproc() != 0){
+    kill(myproc()->pid);
+  }
+  else
+  {
+    cprintf("There are no processes running");
+    cprintf("\n");
+  }
 }
