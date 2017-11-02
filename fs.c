@@ -214,16 +214,17 @@ iupdate(struct inode *ip)
   struct buf *bp;
   struct dinode *dip;
 
-  bp = bread(ip->dev, IBLOCK(ip->inum, sb));
+  bp = bread(ip->dev, IBLOCK(ip->inum, sb)); //semaforo, bloquea la parte del disco
   dip = (struct dinode*)bp->data + ip->inum%IPB;
   dip->type = ip->type;
   dip->major = ip->major;
   dip->minor = ip->minor;
   dip->nlink = ip->nlink;
   dip->size = ip->size;
+  memmove(dip->permissions,ip->permissions,4);
   memmove(dip->addrs, ip->addrs, sizeof(ip->addrs));
   log_write(bp);
-  brelse(bp);
+  brelse(bp);//semaforo, libera
 }
 
 // Find the inode with number inum on device dev
