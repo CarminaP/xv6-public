@@ -67,12 +67,16 @@ main(int argc, char *argv[])
 
   while(1){
     printf(1,"login: ");
+    memset(userName,0,sizeof(userName));
     read(0,userName, sizeof(userName));
     userName[strlen(userName)-1] = ':';
+    userName[strlen(userName)] = '\0';
 
     printf(1,"password: ");
+    memset(userPassword,0,sizeof(userPassword));
     read(0,userPassword, sizeof(userPassword));
     userPassword[strlen(userPassword)-1] = ':';
+    userPassword[strlen(userPassword)] = '\0';
 
     fd = open(passwdFile, 0);
 
