@@ -572,7 +572,8 @@ void KillProcess(void)
   }
 }
 
-int sys_killsignal(void) {
+int
+sys_killsignal(void) {
  int pid;
  int signum;
  struct proc *p;
@@ -596,4 +597,36 @@ int sys_killsignal(void) {
  //Point to the function
  p->tf->eip = (uint)p->signals[signum];
  return 1;
+}
+
+int
+str_match(char *x, char *y){
+  int i = 0;
+  if(strlen(x) != strlen(y)) return 0;
+  while(i < strlen(x)){
+    if(x[i] != y[i]) return 0;
+    i++;
+  }
+  return 1;
+}
+
+char *argv[] = { "login", 0 };
+int
+sys_endsession(void){
+  struct proc *p_sh;
+  char *n_sh = "shell";
+  struct proc *p_login;
+  char *n_login = "login";
+
+  for(p_login = ptable.proc; p_login < &ptable.proc[NPROC]; p_login++){
+    if (str_match(p_login->name, n_login)) break;
+  }
+
+  for(p_sh = ptable.proc; p_sh < &ptable.proc[NPROC]; p_sh++){
+    if (str_match(p_sh->name, n_sh)) break;
+  }
+
+  kill(p_sh -> pid);
+  exec("login", argv);
+  return 1;
 }

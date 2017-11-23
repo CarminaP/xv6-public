@@ -34,6 +34,7 @@ int signal(int, sighandler_t);
 int killsignal(int, int);
 //int signal(int, void(*func)(void)); //funcion que recibe nada y regresa nada
 int chmod(char *, char *);
+int endsession(void);
 
 // ulib.c
 int stat(char*, struct stat*);
